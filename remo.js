@@ -28,7 +28,7 @@ const sendSignal = async () => {
 exports.lightOff = async () => {
   let ill = await getIll();
   console.log(`lightoff illumination is ${ill}`)
-  if (Number(ill) > 80) {
+  if (Number(ill) > 50) {
     await sendSignal();
     await sendSignal();
     await sendSignal();
