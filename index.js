@@ -1,17 +1,12 @@
 require('dotenv').config()
 const remo = require('./remo')
-var firebase = require("firebase");
+var firebase = require("firebase-admin");
+var serviceAccount = require("./setting/firebase-config.json");
 
-var config = {
-  apiKey: process.env.APIKEY,
-  authDomain: process.env.AUTHDOMAIN,
-  databaseURL: process.env.DATABASEURL,
-  projectId: process.env.PROJECTID,
-  storageBucket: process.env.STORAGEBUCKET,
-  messagingSenderId: process.env.MESSAGINGSENDERID
-};
-
-firebase.initializeApp(config);
+firebase.initializeApp({
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: process.env.DATABASEURL
+});
 
 var db = firebase.database();
 var ref = db.ref("/");
@@ -19,11 +14,10 @@ var ref = db.ref("/");
 ref.on("child_changed", function (changedSnapshot) {
   const l = changedSnapshot.val();
   console.log(`light ${l}`);
-  let done = true;
   if (l === "true") {
-    done = remo.lightOn()
+    remo.lightOn()
   } else if (l === "false") {
-    done = remo.lightOff()
+    remo.lightOff()
   }
   ref.update({
     light: "wait"
