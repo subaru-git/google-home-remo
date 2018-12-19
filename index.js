@@ -1,7 +1,13 @@
 require('dotenv').config()
 const remo = require('./remo')
+const sensor = require('./sensor')
+const cron = require('node-cron')
 var firebase = require("firebase-admin");
 var serviceAccount = require("./setting/firebase-config.json");
+
+cron.schedule('* * * * *', () => {
+  sensor.pushSensor();
+});
 
 firebase.initializeApp({
   credential: firebase.credential.cert(serviceAccount),
